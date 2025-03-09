@@ -78,3 +78,5 @@ app.use(unknownEndPoint)
 const PORT = 3001
 
 app.listen(PORT,()=>{console.log("running on server ", PORT)})
+
+module.exports = app
