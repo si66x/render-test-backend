@@ -20,10 +20,11 @@ let notes = [
     }
   ]
 
-  const generateId = () =>{
-    const poolOfIds = notes.map(note=>Number(note.id))
-    const finalID = Math.max(poolOfIds) + 1
-    return finalID.toString()
+  const generateId = () => {
+    const maxId = notes.length > 0
+      ? Math.max(...notes.map(n => Number(n.id)))
+      : 0
+    return String(maxId + 1)
   }
 
 const requestLogger = (request, response, next)=>{
@@ -45,6 +46,7 @@ morgan.token('body',(req,res)=>{
 })
 const app = express()
 app.use(express.json())
+app.use(express.static('dist'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(cors())
 
@@ -66,8 +68,8 @@ app.post('/api/notes/',(req,res)=>{
     const body = req.body
     const noteObj = {
         id: generateId(),
-        note: body.content,
-        important : body.important|false
+        content: body.content,
+        important : body.important||false
     }
     notes = notes.concat(noteObj)
     res.json(noteObj)
